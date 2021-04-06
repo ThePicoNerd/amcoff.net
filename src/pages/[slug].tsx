@@ -43,7 +43,7 @@ export const getStaticProps: GetStaticProps<PostPageProps, PostPageParams> = asy
 const PostPage: NextPage<PostPageProps> = ({
   post,
 }) => (
-  <Base>
+  <Base title={post.data.title} description={post.data.excerpt} images={post.data.images} type="article">
     <article>
       <PostHeader data={post.data} />
       <PostContent source={post.mdxSource} />

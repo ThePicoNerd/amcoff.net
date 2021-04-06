@@ -1,7 +1,6 @@
 import React from "react";
 import { GetStaticProps, NextPage } from "next";
-import Link from "next/link";
-import { getPosts, getPostSlugs, PostData } from "../lib/posts";
+import { getPosts, PostData } from "../lib/posts";
 import Base from "../components/Base";
 import PostList from "../components/PostList";
 
@@ -22,7 +21,7 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
 const Home: NextPage<HomeProps> = ({
   posts,
 }) => (
-  <Base>
+  <Base title="blog" description="a random blog about random things">
     <header>
       <h1>blog</h1>
     </header>

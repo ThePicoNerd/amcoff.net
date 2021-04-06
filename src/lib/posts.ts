@@ -17,6 +17,8 @@ export interface PostData {
   title: string;
   publishedAt: string;
   slug: string;
+  excerpt: string;
+  images: string[];
 }
 
 export interface Post {
@@ -34,12 +36,20 @@ export const readPostMarkdown = (slug: string): PostMarkdown => {
   const fileContents = fs.readFileSync(path, "utf8");
   const { content, data } = matter(fileContents);
 
+  const mdImageRexExp = /!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?\)/g;
+
+  const imageMatches = Array.from(content.matchAll(mdImageRexExp));
+
+  const images = imageMatches.map((match) => match[1]);
+
   return {
     content,
     data: {
       slug,
       title: data.title,
       publishedAt: data.publishedAt.toISOString(),
+      excerpt: data.excerpt,
+      images,
     },
   };
 };
