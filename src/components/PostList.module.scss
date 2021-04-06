@@ -1,0 +1,13 @@
+.list {
+  padding: 0;
+  margin: 0;
+
+  li {
+    list-style-type: none;
+
+    time {
+      color: var(--secondary-text);
+      margin-right: 2em;
+    }
+  }
+}

@@ -1,0 +1,22 @@
+.base {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  header {
+    margin-top: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  footer {
+    color: var(--secondary-text);
+    margin-top: 4rem;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    margin-top: auto;
+  }
+}
