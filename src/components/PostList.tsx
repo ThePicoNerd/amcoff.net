@@ -14,7 +14,7 @@ const PostList: FunctionComponent<PostListProps> = ({
   <ul className={styles.list}>
     {posts.map((post) => (
       <li key={post.slug}>
-        <time>{DateTime.fromISO(post.publishedAt).toLocaleString(DateTime.DATE_SHORT)}</time>
+        <time>{DateTime.fromISO(post.publishedAt).toISODate()}</time>
         <Link href={`/${post.slug}`}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a>

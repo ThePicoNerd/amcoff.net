@@ -12,7 +12,7 @@ const PostHeader: FunctionComponent<PostHeaderProps> = ({
 }) => (
   <header className={styles.header}>
     <h1>{data.title}</h1>
-    <time>{DateTime.fromISO(data.publishedAt).toLocaleString(DateTime.DATE_SHORT)}</time>
+    <time>{DateTime.fromISO(data.publishedAt).toISODate()}</time>
   </header>
 );
 
