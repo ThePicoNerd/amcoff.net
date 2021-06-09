@@ -21,9 +21,9 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
 const Home: NextPage<HomeProps> = ({
   posts,
 }) => (
-  <Base title="blog" description="a random blog about random things">
+  <Base title="amcoff.net" description="a random blog about random things">
     <header>
-      <h1>blog</h1>
+      <h1>amcoff.net</h1>
     </header>
     <section>
       <PostList posts={posts} />

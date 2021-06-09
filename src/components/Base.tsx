@@ -23,7 +23,7 @@ const Base: FunctionComponent<BaseProps> = ({
 
       <meta property="og:type" content={type} />
       <meta property="og:title" content={title} />
-      <meta property="og:site_name" content="blog" />
+      <meta property="og:site_name" content="amcoff.net" />
       <meta property="og:description" content={description} />
 
       {images.map((image) => (
