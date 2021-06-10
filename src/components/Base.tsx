@@ -32,9 +32,7 @@ const Base: FunctionComponent<BaseProps> = ({
     </Head>
     <div className={styles.base}>
       {children}
-      <footer>
-        Copyright © 2021 ThePicoNerd
-      </footer>
+      <footer>Copyright © 2021 ThePicoNerd</footer>
     </div>
   </>
 );

@@ -27,23 +27,25 @@ export const getStaticPaths: GetStaticPaths<PostPageParams> = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<PostPageProps, PostPageParams> = async ({
-  params,
-}) => {
-  const slug = params.slug?.toString();
-  const post = await getPostBySlug(slug);
+export const getStaticProps: GetStaticProps<PostPageProps, PostPageParams> =
+  async ({ params }) => {
+    const slug = params.slug?.toString();
+    const post = await getPostBySlug(slug);
 
-  return {
-    props: {
-      post,
-    },
+    return {
+      props: {
+        post,
+      },
+    };
   };
-};
 
-const PostPage: NextPage<PostPageProps> = ({
-  post,
-}) => (
-  <Base title={post.data.title} description={post.data.excerpt} images={post.data.images} type="article">
+const PostPage: NextPage<PostPageProps> = ({ post }) => (
+  <Base
+    title={post.data.title}
+    description={post.data.excerpt}
+    images={post.data.images}
+    type="article"
+  >
     <article>
       <PostHeader data={post.data} />
       <PostContent source={post.mdxSource} />

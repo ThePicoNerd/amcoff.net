@@ -7,11 +7,13 @@ import { DateTime } from "luxon";
 
 const postsDirectory = join(process.cwd(), "_posts");
 
-export const parseFilename = (filename: string): string => filename.replace(/\.mdx$/, "");
+export const parseFilename = (filename: string): string =>
+  filename.replace(/\.mdx$/, "");
 
 export const getFilename = (slug: string): string => `${slug}.mdx`;
 
-export const getPostSlugs = (): string[] => fs.readdirSync(postsDirectory).map(parseFilename);
+export const getPostSlugs = (): string[] =>
+  fs.readdirSync(postsDirectory).map(parseFilename);
 
 export interface PostData {
   title: string;
@@ -36,7 +38,8 @@ export const readPostMarkdown = (slug: string): PostMarkdown => {
   const fileContents = fs.readFileSync(path, "utf8");
   const { content, data } = matter(fileContents);
 
-  const mdImageRexExp = /!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?\)/g;
+  const mdImageRexExp =
+    /!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?\)/g;
 
   const imageMatches = Array.from(content.matchAll(mdImageRexExp));
 
@@ -59,8 +62,11 @@ export const getPosts = (): PostData[] => {
 
   return slugs
     .map((slug) => readPostMarkdown(slug).data)
-    .sort((a, b) => DateTime.fromISO(b.publishedAt).toMillis()
-    - DateTime.fromISO(a.publishedAt).toMillis());
+    .sort(
+      (a, b) =>
+        DateTime.fromISO(b.publishedAt).toMillis() -
+        DateTime.fromISO(a.publishedAt).toMillis(),
+    );
 };
 
 export const getPostBySlug = async (slug: string): Promise<Post> => {

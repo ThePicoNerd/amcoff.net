@@ -7,16 +7,10 @@ export interface PostContentProps {
   source: MdxRemote.Source;
 }
 
-const PostContent: FunctionComponent<PostContentProps> = ({
-  source,
-}) => {
+const PostContent: FunctionComponent<PostContentProps> = ({ source }) => {
   const content = hydrate(source);
 
-  return (
-    <div className={styles.content}>
-      {content}
-    </div>
-  );
+  return <div className={styles.content}>{content}</div>;
 };
 
 export default PostContent;

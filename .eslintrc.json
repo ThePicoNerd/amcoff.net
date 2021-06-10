@@ -9,7 +9,8 @@
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "airbnb-typescript"
+    "airbnb-typescript",
+    "plugin:prettier/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -25,13 +26,11 @@
       "version": "detect"
     }
   },
-  "plugins": [
-    "react",
-    "@typescript-eslint"
-  ],
+  "plugins": ["react", "@typescript-eslint"],
   "rules": {
     "react/prop-types": "off",
     // "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/quotes": [2, "double", { "avoidEscape": true }]
+    "@typescript-eslint/quotes": [2, "double", { "avoidEscape": true }],
+    "react/jsx-props-no-spreading": "off"
   }
 }

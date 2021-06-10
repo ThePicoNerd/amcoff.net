@@ -8,18 +8,14 @@ export interface PostListProps {
   posts: PostData[];
 }
 
-const PostList: FunctionComponent<PostListProps> = ({
-  posts,
-}) => (
+const PostList: FunctionComponent<PostListProps> = ({ posts }) => (
   <ul className={styles.list}>
     {posts.map((post) => (
       <li key={post.slug}>
         <time>{DateTime.fromISO(post.publishedAt).toISODate()}</time>
         <Link href={`/${post.slug}`}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a>
-            {post.title}
-          </a>
+          <a>{post.title}</a>
         </Link>
       </li>
     ))}

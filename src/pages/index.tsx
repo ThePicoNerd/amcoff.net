@@ -18,9 +18,7 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
   };
 };
 
-const Home: NextPage<HomeProps> = ({
-  posts,
-}) => (
+const Home: NextPage<HomeProps> = ({ posts }) => (
   <Base title="amcoff.net" description="a random blog about random things">
     <header>
       <h1>amcoff.net</h1>
