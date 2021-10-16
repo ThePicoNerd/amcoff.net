@@ -1,17 +1,24 @@
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
+@import url("https://rsms.me/inter/inter.css");
+
+:root {
+  --text-primary: #000;
+  --text-secondary: #999;
+}
 
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "JetBrains Mono", monospace;
-  background-color: #181818;
-  color: #ccc;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   line-height: 1.725;
+  color: var(--text-primary);
+  letter-spacing: -0.006em;
 
-  --primary-color: #00fa9a;
-  --secondary-text: #666;
+  @supports (font-variation-settings: normal) {
+    font-family: "Inter var", sans-serif;
+  }
 }
 
 * {
@@ -24,14 +31,14 @@ code {
 }
 
 :not(pre) > code {
-  background-color: #333;
+  background-color: rgba(0, 0, 0, 0.1);
   padding: 0.2em 0.5em;
-  font-size: 1em;
+  font-size: 0.9em;
   border-radius: 0.4em;
 }
 
 pre {
-  background-color: #222;
+  background-color: rgba(0, 0, 0, 0.05);
   padding: 1rem;
   border-radius: 4px;
   font-size: 12px;
@@ -41,16 +48,11 @@ pre {
 a {
   color: inherit;
   text-decoration: underline;
-
-  &:hover {
-    color: var(--primary-color);
-  }
 }
 
 blockquote {
   margin: 2em;
   position: relative;
-  color: var(--primary-color);
   font-weight: 500;
 
   &::before {
@@ -69,6 +71,7 @@ h1 {
   font-size: 2rem;
   font-weight: 500;
   margin: 0;
+  letter-spacing: -0.022em;
 }
 
 img {

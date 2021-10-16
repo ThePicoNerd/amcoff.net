@@ -1,15 +1,15 @@
 .header {
   h1 {
-    font-size: 1.5rem;
+    font-size: 3rem;
     font-weight: 500;
-    color: var(--primary-color);
     margin: 0;
+    letter-spacing: -0.022em;
   }
 
   time {
     margin-bottom: 1rem;
     font-size: 14px;
     line-height: 1;
-    font-weight: 500;
+    color: var(--text-secondary);
   }
 }
