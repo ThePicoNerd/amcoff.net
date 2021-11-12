@@ -1,16 +1,16 @@
 import React, { FunctionComponent } from "react";
 import { DateTime } from "luxon";
-import { PostData } from "../lib/posts";
+import { PostMeta } from "../lib/posts";
 import styles from "./PostHeader.module.scss";
 
 export interface PostHeaderProps {
-  data: PostData;
+  meta: PostMeta;
 }
 
-const PostHeader: FunctionComponent<PostHeaderProps> = ({ data }) => (
+const PostHeader: FunctionComponent<PostHeaderProps> = ({ meta }) => (
   <header className={styles.header}>
-    <h1>{data.title}</h1>
-    <time>{DateTime.fromISO(data.publishedAt).toISODate()}</time>
+    <h1>{meta.title}</h1>
+    <time>{DateTime.fromISO(meta.publishedAt).toISODate()}</time>
   </header>
 );
 

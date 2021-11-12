@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from "react";
 import { DateTime } from "luxon";
 import Link from "next/link";
-import { PostData } from "../lib/posts";
+import { PostMeta } from "../lib/posts";
 import styles from "./PostList.module.scss";
 
 export interface PostListProps {
-  posts: PostData[];
+  posts: PostMeta[];
 }
 
 const PostList: FunctionComponent<PostListProps> = ({ posts }) => (

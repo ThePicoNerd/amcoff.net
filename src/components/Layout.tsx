@@ -1,15 +1,15 @@
 import Head from "next/head";
 import React, { FunctionComponent } from "react";
-import styles from "./Base.module.scss";
+import styles from "./Layout.module.scss";
 
-export interface BaseProps {
+export interface Props {
   title: string;
   description: string;
   type?: string;
   images?: string[];
 }
 
-const Base: FunctionComponent<BaseProps> = ({
+const Layout: FunctionComponent<Props> = ({
   children,
   title,
   description,
@@ -37,4 +37,4 @@ const Base: FunctionComponent<BaseProps> = ({
   </>
 );
 
-export default Base;
+export default Layout;

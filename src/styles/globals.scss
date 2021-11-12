@@ -1,24 +1,29 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
-@import url("https://rsms.me/inter/inter.css");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
 
 :root {
+  --background: #fff;
   --text-primary: #000;
   --text-secondary: #999;
+  --link-color: #0044ff;
+  --accent: #ddd;
+
+  @media (prefers-color-scheme: dark) {
+    --accent: #666;
+    --background: #000;
+    --link-color: #2a63ff;
+    --text-primary: #fff;
+    --text-secondary: #999;
+  }
 }
 
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Inter", sans-serif;
-  font-size: 14px;
-  line-height: 1.725;
+  font-family: "IBM Plex Sans", sans-serif;
   color: var(--text-primary);
   letter-spacing: -0.006em;
-
-  @supports (font-variation-settings: normal) {
-    font-family: "Inter var", sans-serif;
-  }
+  background-color: var(--background);
 }
 
 * {
@@ -26,23 +31,15 @@ body {
 }
 
 code {
-  font-family: "JetBrains Mono", monospace;
+  font-family: "IBM Plex Mono", monospace;
   word-break: break-word;
 }
 
 :not(pre) > code {
-  background-color: rgba(0, 0, 0, 0.1);
-  padding: 0.2em 0.5em;
-  font-size: 0.9em;
+  border: 1px solid var(--accent);
+  padding: 0.2em 0.4em;
+  font-size: 0.8em;
   border-radius: 0.4em;
-}
-
-pre {
-  background-color: rgba(0, 0, 0, 0.05);
-  padding: 1rem;
-  border-radius: 4px;
-  font-size: 12px;
-  overflow-x: auto;
 }
 
 a {
@@ -50,26 +47,9 @@ a {
   text-decoration: underline;
 }
 
-blockquote {
-  margin: 2em;
-  position: relative;
-  font-weight: 500;
-
-  &::before {
-    font-size: 2em;
-    content: "\201C";
-    vertical-align: -0.4em;
-    line-height: 0.1em;
-  }
-
-  p {
-    margin: 0;
-  }
-}
-
 h1 {
   font-size: 3rem;
-  font-weight: 500;
+  font-weight: 700;
   margin: 0;
   letter-spacing: -0.022em;
 }

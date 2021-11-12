@@ -1,11 +1,11 @@
 import React from "react";
 import { GetStaticProps, NextPage } from "next";
-import { getPosts, PostData } from "../lib/posts";
-import Base from "../components/Base";
+import { getPosts, PostMeta } from "../lib/posts";
+import Layout from "../components/Layout";
 import PostList from "../components/PostList";
 
 export interface HomeProps {
-  posts: PostData[];
+  posts: PostMeta[];
 }
 
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
@@ -19,14 +19,14 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
 };
 
 const Home: NextPage<HomeProps> = ({ posts }) => (
-  <Base title="amcoff.net" description="a random blog about random things">
+  <Layout title="Åke Amcoff" description="a random blog about random things">
     <header>
-      <h1>amcoff.net</h1>
+      <h1>Åke Amcoff</h1>
     </header>
     <section>
       <PostList posts={posts} />
     </section>
-  </Base>
+  </Layout>
 );
 
 export default Home;

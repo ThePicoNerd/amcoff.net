@@ -1,8 +1,8 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { ParsedUrlQuery } from "querystring";
 import React from "react";
-import Base from "../components/Base";
-import PostContent from "../components/PostContent";
+import Layout from "../components/Layout";
+import Prose from "../components/Prose";
 import PostHeader from "../components/PostHeader";
 import { getPostBySlug, getPostSlugs, Post } from "../lib/posts";
 
@@ -40,17 +40,17 @@ export const getStaticProps: GetStaticProps<PostPageProps, PostPageParams> =
   };
 
 const PostPage: NextPage<PostPageProps> = ({ post }) => (
-  <Base
-    title={post.data.title}
-    description={post.data.excerpt}
-    images={post.data.images}
+  <Layout
+    title={post.meta.title}
+    description={post.meta.excerpt}
+    images={post.meta.images}
     type="article"
   >
     <article>
-      <PostHeader data={post.data} />
-      <PostContent source={post.mdxSource} />
+      <PostHeader meta={post.meta} />
+      <Prose source={post.mdxSource} />
     </article>
-  </Base>
+  </Layout>
 );
 
 export default PostPage;

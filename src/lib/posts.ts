@@ -15,7 +15,7 @@ export const getFilename = (slug: string): string => `${slug}.mdx`;
 export const getPostSlugs = (): string[] =>
   fs.readdirSync(postsDirectory).map(parseFilename);
 
-export interface PostData {
+export interface PostMeta {
   title: string;
   publishedAt: string;
   slug: string;
@@ -25,12 +25,12 @@ export interface PostData {
 
 export interface Post {
   mdxSource: MdxRemote.Source;
-  data: PostData;
+  meta: PostMeta;
 }
 
 export interface PostMarkdown {
   content: string;
-  data: PostData;
+  meta: PostMeta;
 }
 
 export const readPostMarkdown = (slug: string): PostMarkdown => {
@@ -47,7 +47,7 @@ export const readPostMarkdown = (slug: string): PostMarkdown => {
 
   return {
     content,
-    data: {
+    meta: {
       slug,
       title: data.title,
       publishedAt: data.publishedAt.toISOString(),
@@ -57,11 +57,11 @@ export const readPostMarkdown = (slug: string): PostMarkdown => {
   };
 };
 
-export const getPosts = (): PostData[] => {
+export const getPosts = (): PostMeta[] => {
   const slugs = getPostSlugs();
 
   return slugs
-    .map((slug) => readPostMarkdown(slug).data)
+    .map((slug) => readPostMarkdown(slug).meta)
     .sort(
       (a, b) =>
         DateTime.fromISO(b.publishedAt).toMillis() -
@@ -70,11 +70,11 @@ export const getPosts = (): PostData[] => {
 };
 
 export const getPostBySlug = async (slug: string): Promise<Post> => {
-  const { content, data } = readPostMarkdown(slug);
+  const { content, meta: data } = readPostMarkdown(slug);
   const mdxSource = await renderToString(content);
 
   return {
     mdxSource,
-    data,
+    meta: data,
   };
 };
