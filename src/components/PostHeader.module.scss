@@ -1,12 +1,23 @@
 .header {
+  margin-top: var(--page-gutter);
+  margin-bottom: 24px;
+
+  @media (min-width: 480px) {
+    margin-top: 64px;
+  }
+
   h1 {
-    margin: 0;
-    font-weight: 700;
+    margin-block: 16px;
+    font-size: 48px;
+
+    @media (min-width: 768px) {
+      font-size: 56px;
+    }
   }
 
   time {
-    margin-bottom: 1rem;
     font-size: 14px;
+    font-weight: 500;
     line-height: 1;
     color: var(--text-secondary);
   }

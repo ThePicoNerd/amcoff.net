@@ -1,9 +1,9 @@
 import fs from "fs";
 import matter from "gray-matter";
-import renderToString from "next-mdx-remote/render-to-string";
-import { MdxRemote } from "next-mdx-remote/types";
+import { serialize } from "next-mdx-remote/serialize";
 import { join } from "path";
 import { DateTime } from "luxon";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 const postsDirectory = join(process.cwd(), "_posts");
 
@@ -24,7 +24,7 @@ export interface PostMeta {
 }
 
 export interface Post {
-  mdxSource: MdxRemote.Source;
+  mdxSource: MDXRemoteSerializeResult;
   meta: PostMeta;
 }
 
@@ -71,7 +71,7 @@ export const getPosts = (): PostMeta[] => {
 
 export const getPostBySlug = async (slug: string): Promise<Post> => {
   const { content, meta: data } = readPostMarkdown(slug);
-  const mdxSource = await renderToString(content);
+  const mdxSource = await serialize(content);
 
   return {
     mdxSource,

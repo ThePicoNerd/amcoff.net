@@ -6,6 +6,7 @@
   --text-secondary: #999;
   --link-color: #0044ff;
   --accent: #ddd;
+  --page-gutter: 24px;
 
   @media (prefers-color-scheme: dark) {
     --accent: #666;
@@ -48,10 +49,9 @@ a {
 }
 
 h1 {
-  font-size: 3rem;
   font-weight: 700;
-  margin: 0;
-  letter-spacing: -0.022em;
+  line-height: 1.2;
+  letter-spacing: -0.05em;
 }
 
 img {

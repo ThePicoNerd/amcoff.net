@@ -1,16 +1,15 @@
-import hydrate from "next-mdx-remote/hydrate";
-import { MdxRemote } from "next-mdx-remote/types";
+import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import React, { FunctionComponent } from "react";
 import styles from "./Prose.module.scss";
 
 export interface Props {
-  source: MdxRemote.Source;
+  source: MDXRemoteSerializeResult;
 }
 
-const Prose: FunctionComponent<Props> = ({ source }) => {
-  const content = hydrate(source);
-
-  return <div className={styles.container}>{content}</div>;
-};
+const Prose: FunctionComponent<Props> = ({ source }) => (
+  <div className={styles.container}>
+    <MDXRemote {...source} />
+  </div>
+);
 
 export default Prose;

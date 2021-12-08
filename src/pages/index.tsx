@@ -20,9 +20,6 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
 
 const Home: NextPage<HomeProps> = ({ posts }) => (
   <Layout title="Åke Amcoff" description="a random blog about random things">
-    <header>
-      <h1>Åke Amcoff</h1>
-    </header>
     <section>
       <PostList posts={posts} />
     </section>
