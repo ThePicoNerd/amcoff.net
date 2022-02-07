@@ -32,7 +32,7 @@ const Layout: FunctionComponent<Props> = ({
     </Head>
     <div className={styles.base}>
       {children}
-      <footer>© 2021 Åke Amcoff</footer>
+      <footer>© 2022 Åke Amcoff</footer>
     </div>
   </>
 );
