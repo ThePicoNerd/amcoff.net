@@ -5,20 +5,30 @@ excerpt: How I used Discord as a fully-fledged content management system.
 ---
 
 During the final weeks of school back in 2019, I and a few other students were sick and tired of the so-called food served in the cafeteria.
-We decided to photograph the food every day and display the images on a website. Since fancy solutions such as Amazon S3 and Google Cloud Storage exceeded the budget,
+We decided to photograph the food every day and display the images on a website. Since fancy storage solutions such as Amazon S3 and Google Cloud Storage exceeded the budget,
 I had to come up with a creative solution for storing and browsing hundreds of photos.
 
 Being a gamer, I was a seasoned [Discord](https://discord.com/) user. I was also familiar with the wonderful [Discord API](https://discord.com/developers/docs/intro)
 as well as [the inofficial JavaScript library](https://discord.js.org/#/) used to interact with it.
 As far as I know, you can post as many messages in a Discord channel as you want –
 as long as the attachments are smaller than 8 megabytes (because I'm too cheap for [Nitro](https://discord.com/nitro)).
-On top of that, the API used to interact with Discord is free and comes with [generous rate limits](https://discord.com/developers/docs/topics/rate-limits)!
+On top of that, the API used to interact with Discord is public and comes with [generous rate limits](https://discord.com/developers/docs/topics/rate-limits)!
 
 Scrolling through a chat with potentially hundreds of messages wasn't going to cut it for me, though. To improve user experience, a website had to be built.
 To be recognized on _the interwebs_, I had to make the first-ever purchase for this project: a domain name. Given that the school is called Södermalmsskolan,
 [södermalmsskolan.com](https://xn--sdermalmsskolan-8sb.com/) seemed fitting. And cheap – I paid €3 for the first year at GoDaddy!
 
-![The first ever photograph.](https://cdn.discordapp.com/attachments/575993879837409290/576074256723476491/IMG_20190507_121005.jpg)
+<Warning>
+  While I was a faithful customer of GoDaddy for several years and paid them
+  hundreds of euros in domain fees, I wouldn't recommend them to anyone today.
+  Namecheap proved to be much more economical and, frankly, cooler in every way
+  possible. At the end of the day, the only feature of a domain registrar that I
+  care about is how fast I can switch to some other nameservers. But now you all
+  know there is a registrar named Namecheap, and that they saved me, in every
+  way that a developer can be saved.
+</Warning>
+
+<Image src="/assets/potato.jpg" width={3036} height={4048} />
 
 ## The First Iteration
 

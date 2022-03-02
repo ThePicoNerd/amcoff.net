@@ -10,6 +10,7 @@ export interface PostHeaderProps {
 const PostHeader: FunctionComponent<PostHeaderProps> = ({ meta }) => (
   <header className={styles.header}>
     <h1>{meta.title}</h1>
+    <p className={styles.excerpt}>{meta.excerpt}</p>
     <time dateTime={meta.publishedAt}>
       {DateTime.fromISO(meta.publishedAt).toISODate()}
     </time>
