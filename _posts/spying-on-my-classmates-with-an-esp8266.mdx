@@ -1,0 +1,75 @@
+---
+title: Spying on My Classmates With an ESP8266
+publishedAt: 2022-03-02T18:00:00Z
+excerpt: Hello
+---
+
+The cafeteria in my school is often incredibly crowded. As I am a person who likes to eat while
+sitting at a table and not standing, I set out to solve this problem. Although I felt that I had a
+pretty good picture of when the peak hours were, I wanted to draw some accurate charts.
+
+![](https://lh3.googleusercontent.com/BL8ZDqdxEpo4SHbZTzCk_BppFbNjcMR-qKqFUx8ua1B522GfghtU6R10TVWZxS9FbUA=w400)
+
+My main source of inspiration was the "Popular times" section found in Google Maps. Google uses
+anonymized location data from its users to determine where everyone is. I considered adopting this
+strategy but quickly realized that my websites attract too little traffic for this kind of data collection.
+I wasn't going to build a native app for just this purpose and then persuade hundreds of students to
+install it.
+
+Instead, I turned to wireless analysis. I had some [Raspberry Pi Zero W](https://www.raspberrypi.com/products/raspberry-pi-zero-w/)
+single-board computers collecting dust in a drawer and figured that I could put them to better use.
+I was going to sniff the network traffic in my school.
+
+The Pi Zero W supports two wireless standards:
+
+- Bluetooth 4.1 (and Low Energy)
+- `802.11 b/g/n` WiFi
+
+I experimented a bit with listening for nearby Bluetooth devices since I thought this would give me
+a rough idea of how many people were nearby. I quickly ran into compilation complications trying to
+cross-compile Rust for the `ARMv6` architecture (and dynamically linking some Bluetooth library) and
+decided to give up on Rust and Bluetooth on the Pi.
+
+While I was trying to make my Rust program talk with the Bluetooth adapter on my Raspberry Pi, I
+laid out deployment plans. I would try to hide the little computer somewhere in the cafeteria and
+hope for the best. Eventually, I realized that the Pi (albeit not much larger than a flash drive) was
+too big, at least with the wall adaptor and power cable included in the calculation. The device had
+to be even smaller. It was time to **embed**.
+
+Enter the [Espressif 8266 microcontroller](https://www.espressif.com/en/products/socs/esp8266).
+Launched in August 2014, this chip is neither the newest nor the fastest. But it supports `802.11 b/g/n`
+WiFi and can be found for less than a euro. Eager to get my hands dirty with embedded programming,
+I built a flashing station on a breadboard and connected the FTDI programmer to my computer. The first
+few hours were devoted to just making the chip blink with code.
+
+After the microcontroller finally started to blink, I moved on to actually writing the software that
+would be used in the wild. I had a rough idea of what I wanted the microcontroller to do:
+
+1. Count the number of WiFi devices nearby.
+2. Insert the data into an InfluxDB database.
+3. Sleep for a few minutes, then `GOTO 1`.
+
+Simple enough, I said to myself. Boy was I wrong ...
+
+## 1. Counting Nearby WiFi Devices
+
+I had screwed around with Wirehark and Aircrack-ng enough to know that you need a dedicated WiFi
+interface for monitoring. In other words, you cannot be connected to a WiFi network and sniff
+WiFi frames at the same time (unless you have more than one antenna, which almost all modern WiFi
+devices do). The ESP8266 has a single 2.4&nbsp;GHz antenna.
+
+"But why do you need to connect to a WiFi network in the first place?", you might ask. Well, I need to
+do something with the data I collect. I could indeed store everything on an SD card and read from it once
+in a week or so, but I also wanted the data to be near real-time. Therefore, I needed to connect to some WiFi
+network (more about that later) and call home with the newly acquired data once in a while.
+
+Because I am a coward, I used the Arduino WiFi library instead of some lower-level SDK to program the
+microcontroller.
+
+```cpp
+void sniffer_init() {
+  wifi_set_promiscuous_rx_cb(handle_packet);
+  wifi_promiscuous_enable(1);
+  wifi_set_channel(1);
+}
+```
