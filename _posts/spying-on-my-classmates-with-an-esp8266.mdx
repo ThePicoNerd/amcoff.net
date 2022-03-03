@@ -1,7 +1,7 @@
 ---
 title: Spying on My Classmates With an ESP8266
 publishedAt: 2022-03-02T18:00:00Z
-excerpt: Hello
+excerpt: I got sick of the crowded cafeteria at my school and tried to gain insight into when people go there.
 ---
 
 The cafeteria in my school is often incredibly crowded. As I am a person who likes to eat while
@@ -42,6 +42,8 @@ WiFi and can be found for less than a euro. Eager to get my hands dirty with emb
 I built a flashing station on a breadboard and connected the FTDI programmer to my computer. The first
 few hours were devoted to just making the chip blink with code.
 
+## Software
+
 After the microcontroller finally started to blink, I moved on to actually writing the software that
 would be used in the wild. I had a rough idea of what I wanted the microcontroller to do:
 
@@ -51,7 +53,7 @@ would be used in the wild. I had a rough idea of what I wanted the microcontroll
 
 Simple enough, I said to myself. Boy was I wrong ...
 
-## 1. Counting Nearby WiFi Devices
+### 1. Counting Nearby WiFi Devices
 
 I had screwed around with Wirehark and Aircrack-ng enough to know that you need a dedicated WiFi
 interface for monitoring. In other words, you cannot be connected to a WiFi network and sniff
@@ -85,9 +87,9 @@ void sniffer_init()
 }
 ```
 
-## 2. Storing Activity Data
+### 2. Storing Activity Data
 
-## 3. Sleeping
+### 3. Sleeping
 
 The microcontroller didn't need to sniff WiFi traffic or transmit data constantly (performing that
 many DHCP requests would probably make me hit a rate limit anyway). If there's a neat way to avoid
@@ -95,7 +97,7 @@ the lengthy DHCP process every time I connect, let me know.
 
 Inbetween monitoring and connecting to the WiFi, the ESP8266 needs to do basically nothing. I had
 previously heard of a feature called _deep sleep_ in which the microcontroller draws basically no
-current (10 microamps which means 33 *micro*watts of power, [at least in theory](#power)).
+current (10 microamps which means 33 *micro*watts of power, in theory ...).
 
 <table>
   <thead>
@@ -109,7 +111,7 @@ current (10 microamps which means 33 *micro*watts of power, [at least in theory]
     <tr>
       <td>Tx 802.11b</td>
       <td>170 mA</td>
-      <td rowspan="3">WiFi transmission</td>
+      <td rowSpan="3">WiFi transmission</td>
     </tr>
     <tr>
       <td>Tx 802.11g</td>
@@ -122,7 +124,7 @@ current (10 microamps which means 33 *micro*watts of power, [at least in theory]
     <tr>
       <td>Rx 802.11b</td>
       <td>50 mA</td>
-      <td rowspan="3">WiFi receival</td>
+      <td rowSpan="3">WiFi receival</td>
     </tr>
     <tr>
       <td>Rx 802.11g</td>
@@ -155,4 +157,4 @@ current (10 microamps which means 33 *micro*watts of power, [at least in theory]
   </tbody>
 </table>
 
-## Power
+## Hardware

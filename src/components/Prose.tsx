@@ -17,8 +17,6 @@ const Code: FunctionComponent<{
   const language = /language-(\w+)/.exec(className ?? "")?.[1];
   const code = children.toString().replace(/\n$/, "");
 
-  console.log(JSON.stringify(code));
-
   return language ? (
     <SyntaxHighlighter
       language={language}

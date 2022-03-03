@@ -5,6 +5,7 @@ import { join } from "path";
 import { DateTime } from "luxon";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { remarkMdxCodeMeta } from "remark-mdx-code-meta";
+import rehypeSlug from "rehype-slug";
 
 const postsDirectory = join(process.cwd(), "_posts");
 
@@ -73,7 +74,11 @@ export const getPosts = (): PostMeta[] => {
 export const getPostBySlug = async (slug: string): Promise<Post> => {
   const { content, meta: data } = readPostMarkdown(slug);
   const mdxSource = await serialize(content, {
-    mdxOptions: { rehypePlugins: [remarkMdxCodeMeta] },
+    mdxOptions: {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      rehypePlugins: [remarkMdxCodeMeta, rehypeSlug],
+    },
   });
 
   return {
