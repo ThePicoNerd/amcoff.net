@@ -4,6 +4,7 @@ import { serialize } from "next-mdx-remote/serialize";
 import { join } from "path";
 import { DateTime } from "luxon";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { remarkMdxCodeMeta } from "remark-mdx-code-meta";
 
 const postsDirectory = join(process.cwd(), "_posts");
 
@@ -71,7 +72,9 @@ export const getPosts = (): PostMeta[] => {
 
 export const getPostBySlug = async (slug: string): Promise<Post> => {
   const { content, meta: data } = readPostMarkdown(slug);
-  const mdxSource = await serialize(content);
+  const mdxSource = await serialize(content, {
+    mdxOptions: { rehypePlugins: [remarkMdxCodeMeta] },
+  });
 
   return {
     mdxSource,

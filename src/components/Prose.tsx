@@ -9,22 +9,31 @@ export interface Props {
   source: MDXRemoteSerializeResult;
 }
 
-const Code: FunctionComponent<{ className: string }> = ({
-  className,
-  ...props
-}) => {
+const Code: FunctionComponent<{
+  className: string;
+  filename?: string;
+  url?: string;
+}> = ({ className, children, filename, url, ...props }) => {
   const language = /language-(\w+)/.exec(className ?? "")?.[1];
+  const code = children.toString().replace(/\n$/, "");
+
+  console.log(JSON.stringify(code));
 
   return language ? (
     <SyntaxHighlighter
       language={language}
-      showLineNumbers
-      wrapLongLines
       useInlineStyles={false}
+      className={styles.pre}
       {...props}
-    />
+    >
+      {code}
+    </SyntaxHighlighter>
   ) : (
-    <code className={className} {...props} />
+    <pre className={styles.pre}>
+      <code className={className} {...props}>
+        {children}
+      </code>
+    </pre>
   );
 };
 

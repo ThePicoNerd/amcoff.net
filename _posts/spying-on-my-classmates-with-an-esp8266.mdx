@@ -46,7 +46,7 @@ After the microcontroller finally started to blink, I moved on to actually writi
 would be used in the wild. I had a rough idea of what I wanted the microcontroller to do:
 
 1. Count the number of WiFi devices nearby.
-2. Insert the data into an InfluxDB database.
+2. Store the data somewhere.
 3. Sleep for a few minutes, then `GOTO 1`.
 
 Simple enough, I said to myself. Boy was I wrong ...
@@ -60,16 +60,99 @@ devices do). The ESP8266 has a single 2.4&nbsp;GHz antenna.
 
 "But why do you need to connect to a WiFi network in the first place?", you might ask. Well, I need to
 do something with the data I collect. I could indeed store everything on an SD card and read from it once
-in a week or so, but I also wanted the data to be near real-time. Therefore, I needed to connect to some WiFi
+in a week or so, but I wanted the data to be near real-time. Therefore, I needed to connect to some WiFi
 network (more about that later) and call home with the newly acquired data once in a while.
 
 Because I am a coward, I used the Arduino WiFi library instead of some lower-level SDK to program the
 microcontroller.
 
-```cpp
-void sniffer_init() {
+```cpp filename=main.cpp
+#include <ESP8266WiFi.h>
+
+uint16_t packet_count = 0;
+
+void handle_packet(uint8_t *buf, uint16_t len)
+{
+  packet_count++;
+}
+
+void sniffer_init()
+{
+  packet_count = 0;
   wifi_set_promiscuous_rx_cb(handle_packet);
   wifi_promiscuous_enable(1);
   wifi_set_channel(1);
 }
 ```
+
+## 2. Storing Activity Data
+
+## 3. Sleeping
+
+The microcontroller didn't need to sniff WiFi traffic or transmit data constantly (performing that
+many DHCP requests would probably make me hit a rate limit anyway). If there's a neat way to avoid
+the lengthy DHCP process every time I connect, let me know.
+
+Inbetween monitoring and connecting to the WiFi, the ESP8266 needs to do basically nothing. I had
+previously heard of a feature called _deep sleep_ in which the microcontroller draws basically no
+current (10 microamps which means 33 *micro*watts of power, [at least in theory](#power)).
+
+<table>
+  <thead>
+    <tr>
+      <th>Mode</th>
+      <th>Typical current</th>
+      <th>Explanation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tx 802.11b</td>
+      <td>170 mA</td>
+      <td rowspan="3">WiFi transmission</td>
+    </tr>
+    <tr>
+      <td>Tx 802.11g</td>
+      <td>140 mA</td>
+    </tr>
+    <tr>
+      <td>Tx 802.11n</td>
+      <td>120 mA</td>
+    </tr>
+    <tr>
+      <td>Rx 802.11b</td>
+      <td>50 mA</td>
+      <td rowspan="3">WiFi receival</td>
+    </tr>
+    <tr>
+      <td>Rx 802.11g</td>
+      <td>56 mA</td>
+    </tr>
+    <tr>
+      <td>Rx 802.11n</td>
+      <td>56 mA</td>
+    </tr>
+    <tr>
+      <td>Modem-sleep</td>
+      <td>15 mA</td>
+      <td>WiFi off</td>
+    </tr>
+    <tr>
+      <td>Light-sleep</td>
+      <td>0.5 mA</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Deep-sleep</td>
+      <td>10 µA</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Power off</td>
+      <td>0.5 µA</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+## Power
