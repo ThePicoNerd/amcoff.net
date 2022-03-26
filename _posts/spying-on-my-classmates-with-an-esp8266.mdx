@@ -85,17 +85,29 @@ void sniffer_init()
   wifi_promiscuous_enable(1);
   wifi_set_channel(1);
 }
+
+// ...
 ```
 
 ### 2. Storing Activity Data
 
+The data collected is useless unless it's read by someone. I did initially consider
+building a custom time-series database from scratch, but calmed myself down when I
+stumbled upon [InfluxDB](https://www.influxdata.com/). The core database is open source,
+and they give you two free buckets with 30-day data retention. They offered exactly what
+I needed.
+
+I signed up for an account, and after a few hours, the microcontroller was sending
+measurements to the database. I had anticipated the storage backend to be the biggest
+pain to build and maintain, but was happily mistaken.
+
 ### 3. Sleeping
 
-The microcontroller didn't need to sniff WiFi traffic or transmit data constantly (performing that
-many DHCP requests would probably make me hit a rate limit anyway). If there's a neat way to avoid
-the lengthy DHCP process every time I connect, let me know.
+The microcontroller didn't need to sniff WiFi traffic or transmit data constantly, and performing that
+many DHCP requests would probably make me hit a rate limit anyway. (If there's a neat way to avoid
+the lengthy DHCP process every time I reconnect, do let me know!)
 
-Inbetween monitoring and connecting to the WiFi, the ESP8266 needs to do basically nothing. I had
+In between monitoring and connecting to the WiFi, the ESP8266 needs to do basically nothing. I had
 previously heard of a feature called _deep sleep_ in which the microcontroller draws basically no
 current (10 microamps which means 33 *micro*watts of power, in theory ...).
 
@@ -115,46 +127,85 @@ current (10 microamps which means 33 *micro*watts of power, in theory ...).
     </tr>
     <tr>
       <td>Tx 802.11g</td>
-      <td>140 mA</td>
+      <td>140&nbsp;mA</td>
     </tr>
     <tr>
       <td>Tx 802.11n</td>
-      <td>120 mA</td>
+      <td>120&nbsp;mA</td>
     </tr>
     <tr>
       <td>Rx 802.11b</td>
-      <td>50 mA</td>
+      <td>50&nbsp;mA</td>
       <td rowSpan="3">WiFi receival</td>
     </tr>
     <tr>
       <td>Rx 802.11g</td>
-      <td>56 mA</td>
+      <td>56&nbsp;mA</td>
     </tr>
     <tr>
       <td>Rx 802.11n</td>
-      <td>56 mA</td>
+      <td>56&nbsp;mA</td>
     </tr>
     <tr>
       <td>Modem-sleep</td>
-      <td>15 mA</td>
+      <td>15&nbsp;mA</td>
       <td>WiFi off</td>
     </tr>
     <tr>
       <td>Light-sleep</td>
-      <td>0.5 mA</td>
+      <td>0.5&nbsp;mA</td>
       <td></td>
     </tr>
     <tr>
       <td>Deep-sleep</td>
-      <td>10 µA</td>
+      <td>10&nbsp;µA</td>
       <td></td>
     </tr>
     <tr>
       <td>Power off</td>
-      <td>0.5 µA</td>
+      <td>0.5&nbsp;µA</td>
       <td></td>
     </tr>
   </tbody>
 </table>
 
+I was puzzled when my microcontroller refused to sleep deeply (or rather, refused to wake up).
+After some googling, though, I found out that the `RST` pin on the ESP has to be connected to
+`GPIO16` in order to enable the internal timer to wake up the microcontroller after a certain
+amount of time. The only caveat is, the variant that I own (the ESP8266**-01**) does _not_ come
+with these pins connected out-of-the-box.
+
+I discovered a well-written tutorial on
+[how to solder the pins together](https://www.instructables.com/Enable-DeepSleep-on-an-ESP8266-01/),
+but I didn't really feel like I was competent enough with the soldering iron.
+
+Instead, I just called the built-in `delay` function after making sure to disable the WiFi
+antennas with `WiFi.forceSleepBegin`. The power savings are negligible anyway when the ESP
+is connected to the wall.
+
 ## Hardware
+
+The microcontroller was flashed and ready to start monitoring, but I was yet to build the power
+delivery circuitry that would convert 230 volts of alternating current into something that wouldn't
+spawnkill the ESP8266.
+
+I didn't want to screw around with high-voltage AC, so I just used an old USB power adapter to
+get the sweet low-voltage direct current. Only problem is, USB is five volts, which is far too
+much for the ESP8266 which ideally wants 3.3&nbsp;VDC. A number of people online claim that five
+volts might fry the ESP8266, since it's quite finicky about what voltage it receives.
+
+There are many ways to step five volts down to 3.3, but I won't (and can't) go into detail about
+what method is the best. For this project, I used the _LD1117V33_ linear voltage regulator. The
+schematics told be to include two capacitors in the circuit, and I did as the schematics told.
+After some below-average solder jobs, the multimeter reported 3.3 volts.
+
+The assembly went relatively smooth, except that I accidentaly ordered a stripboard instead of a
+perfboard and had to file down some of the traces.
+
+<Image src="/assets/esp.jpg" width={3000} height={4000} />
+
+## Results
+
+Reading the charts, there are very apparent peaks during school hours and especially lunch hours,
+which is exactly what I was hoping to see. You can explore the data for yourself at
+[sl.skolorna.com](https://sl.skolorna.com/).

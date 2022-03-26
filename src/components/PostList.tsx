@@ -8,16 +8,19 @@ export interface PostListProps {
 }
 
 const PostList: FunctionComponent<PostListProps> = ({ posts }) => (
-  <ul className={styles.list}>
+  <section className={styles.list}>
     {posts.map((post) => (
-      <li key={post.slug}>
-        <Link href={`/${post.slug}`}>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a>{post.title}</a>
-        </Link>
-      </li>
+      <Link href={`/${post.slug}`} key={post.slug}>
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+        <a>
+          <article>
+            <h3>{post.title}</h3>
+            <p>{post.excerpt}</p>
+          </article>
+        </a>
+      </Link>
     ))}
-  </ul>
+  </section>
 );
 
 export default PostList;

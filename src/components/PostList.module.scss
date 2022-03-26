@@ -1,17 +1,22 @@
 .list {
-  padding: 0;
-  margin: 48px 0;
-  padding-left: 16px;
+  a {
+    display: block;
+    text-decoration: none;
+    margin-block: 32px;
 
-  li {
-    list-style-type: none;
-    margin-bottom: 8px;
-
-    &::before {
-      content: "–";
-      margin-left: -15px;
-      position: absolute;
-      color: var(--text-secondary);
+    &:hover h3 {
+      text-decoration: underline;
     }
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.1;
+    margin-block: 0 16px;
+  }
+
+  p {
+    margin: 0;
   }
 }
