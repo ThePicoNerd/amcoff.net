@@ -1,6 +1,7 @@
 import Head from "next/head";
 import React, { FunctionComponent } from "react";
 import styles from "./Layout.module.scss";
+import Navigation from "./Navigation";
 
 export interface Props {
   title: string;
@@ -31,6 +32,7 @@ const Layout: FunctionComponent<Props> = ({
       ))}
     </Head>
     <div className={styles.base}>
+      <Navigation />
       {children}
       <footer>Åke Amcoff</footer>
     </div>

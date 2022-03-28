@@ -1,12 +1,13 @@
 import { DateTime } from "luxon";
 import { NextApiHandler } from "next";
-import { Monitor } from "../../lib/uptime";
+import { Monitor } from "../../lib/status";
 
 const { HETRIXTOOLS_API_KEY } = process.env;
 
 interface HetrixMonitor {
   id: string;
   name: string;
+  category: string;
   uptime_status: string;
   monitor_status: string;
   last_check: number;
@@ -19,7 +20,7 @@ interface HetrixMonitor {
   uptime: number;
 }
 
-const getUptime: NextApiHandler = async (req, res) => {
+const getStatus: NextApiHandler = async (req, res) => {
   const r = await fetch("https://api.hetrixtools.com/v3/uptime-monitors", {
     headers: { authorization: `Bearer ${HETRIXTOOLS_API_KEY}` },
   });
@@ -33,9 +34,11 @@ const getUptime: NextApiHandler = async (req, res) => {
 
   const monitors: Monitor[] = data.monitors
     .filter((m) => m.public_report)
+    .sort((a, b) => a.name.localeCompare(b.name))
     .map((m) => ({
       name: m.name,
       id: m.id,
+      category: !m.category ? null : m.category,
       online: m.uptime_status === "up",
       maintenance: m.monitor_status === "maint",
       lastCheck: DateTime.fromSeconds(m.last_check).toUTC().toISO(),
@@ -50,4 +53,4 @@ const getUptime: NextApiHandler = async (req, res) => {
   return res.json(monitors);
 };
 
-export default getUptime;
+export default getStatus;

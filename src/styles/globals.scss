@@ -2,24 +2,30 @@
 @import "./highlight";
 
 :root {
+  --accent: #ddd;
   --background: #fff;
   --text-primary: #000;
-  --text-secondary: #444;
+  --text-secondary: #555;
   --link-color: #0044ff;
-  --accent: #ddd;
+  --nav-hover: #eee;
+
   --warning-background: rgba(255, 166, 0, 0.192);
   --on-warning: #a06800;
+  --warning: rgb(238, 155, 0);
+  --error: rgb(255, 53, 53);
   --page-gutter: 24px;
 
   @media (prefers-color-scheme: dark) {
     --accent: #666;
     --background: #000;
-    --link-color: #2a63ff;
     --text-primary: #fff;
     --text-secondary: #999;
+    --link-color: #2a63ff;
+    --nav-hover: #222;
 
     --warning-background: rgba(255, 191, 72, 0.274);
     --on-warning: orange;
+    --warning: rgb(255, 177, 32);
   }
 }
 

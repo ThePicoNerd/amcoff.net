@@ -1,0 +1,20 @@
+.item {
+  list-style: none;
+
+  a {
+    padding: 8px var(--item-pad-x);
+    display: inline-block;
+    border-radius: 8px;
+    transition: background-color 0.1s;
+    text-decoration: none;
+    font-size: 16px;
+
+    &:hover {
+      background-color: var(--nav-hover);
+    }
+
+    &.active {
+      font-weight: 700;
+    }
+  }
+}
