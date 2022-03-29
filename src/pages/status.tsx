@@ -2,30 +2,25 @@ import { NextPage } from "next";
 import React, { FunctionComponent } from "react";
 import useSWR from "swr";
 import Layout from "../components/Layout";
+import Skeleton from "../components/Skeleton";
 import { Monitor } from "../lib/status";
 
 const StatusText: FunctionComponent<{ online: boolean; maintenance: boolean }> =
   ({ online, maintenance }) => {
-    let text = "Down";
-
-    if (online) {
-      if (maintenance) {
-        text = "Under maintenance";
-      } else {
-        text = "Operational";
-      }
-    } else if (maintenance) {
-      text = "Down for maintenance";
-    }
-
+    let text = "Outage";
     let color = "error";
 
     if (online) {
       color = "text-primary";
 
       if (maintenance) {
+        text = "Under maintenance";
         color = "warning";
+      } else {
+        text = "Operational";
       }
+    } else if (maintenance) {
+      text = "Down for maintenance";
     }
 
     return (
@@ -50,13 +45,23 @@ const Status: NextPage = () => {
     <Layout title="Status" description="Service status.">
       <table>
         <tbody>
-          {data?.map((m) => (
-            <tr key={m.id}>
+          {(data ?? Array.from({ length: 5 }))?.map((m, i) => (
+            <tr key={m?.id ?? i}>
               <td>
-                <span className="category">{m.category}</span> / {m.name}
+                {m ? (
+                  <>
+                    <span className="category">{m.category}</span> / {m.name}
+                  </>
+                ) : (
+                  <Skeleton width="10em" />
+                )}
               </td>
               <td align="right">
-                <StatusText online={m.online} maintenance={m.maintenance} />
+                {m ? (
+                  <StatusText online={m.online} maintenance={m.maintenance} />
+                ) : (
+                  <Skeleton width="6em" />
+                )}
               </td>
             </tr>
           ))}

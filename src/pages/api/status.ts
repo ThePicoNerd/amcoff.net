@@ -26,6 +26,8 @@ const getStatus: NextApiHandler = async (req, res) => {
   });
 
   if (!r.ok) {
+    // eslint-disable-next-line no-console
+    console.error(await r.text());
     res.status(503);
     return res.end();
   }
@@ -34,7 +36,7 @@ const getStatus: NextApiHandler = async (req, res) => {
 
   const monitors: Monitor[] = data.monitors
     .filter((m) => m.public_report)
-    .sort((a, b) => a.name.localeCompare(b.name))
+    .sort((a, b) => (a.category + a.name).localeCompare(b.category + b.name))
     .map((m) => ({
       name: m.name,
       id: m.id,
