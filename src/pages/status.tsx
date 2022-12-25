@@ -37,36 +37,48 @@ const StatusText: FunctionComponent<{ online: boolean; maintenance: boolean }> =
   };
 
 const Status: NextPage = () => {
-  const { data } = useSWR<Monitor[]>("/api/status", (path) =>
-    fetch(path).then((res) => res.json()),
+  const { data, error, isValidating } = useSWR<Monitor[]>(
+    "/api/status",
+    (path) =>
+      fetch(path).then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+
+        return res.json();
+      }),
   );
 
   return (
     <Layout title="Status" description="Service status.">
-      <table>
-        <tbody>
-          {(data ?? Array.from({ length: 5 }))?.map((m, i) => (
-            <tr key={m?.id ?? i}>
-              <td>
-                {m ? (
-                  <>
-                    <span className="category">{m.category}</span> / {m.name}
-                  </>
-                ) : (
-                  <Skeleton width="10em" />
-                )}
-              </td>
-              <td align="right">
-                {m ? (
-                  <StatusText online={m.online} maintenance={m.maintenance} />
-                ) : (
-                  <Skeleton width="6em" />
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {error && !isValidating ? (
+        <p>An error occurred.</p>
+      ) : (
+        <table>
+          <tbody>
+            {(data ?? Array.from({ length: 5 }))?.map((m, i) => (
+              <tr key={m?.id ?? i}>
+                <td>
+                  {m ? (
+                    <>
+                      <span className="category">{m.category}</span> / {m.name}
+                    </>
+                  ) : (
+                    <Skeleton width="10em" />
+                  )}
+                </td>
+                <td align="right">
+                  {m ? (
+                    <StatusText online={m.online} maintenance={m.maintenance} />
+                  ) : (
+                    <Skeleton width="6em" />
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       <style jsx>{`
         table {
           width: 100%;

@@ -50,7 +50,7 @@ const getStatus: NextApiHandler = async (req, res) => {
       uptime: m.uptime / 100,
     }));
 
-  res.setHeader("cache-control", "public, max-age=60");
+  res.setHeader("cache-control", "public, max-age=15");
 
   return res.json(monitors);
 };
