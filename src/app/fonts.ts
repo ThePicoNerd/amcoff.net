@@ -9,5 +9,5 @@ export const ibmPlexSans = IBM_Plex_Sans({
 export const martianMono = Martian_Mono({
   weight: "400",
   subsets: ["latin"],
-  display: "block"
+  display: "block",
 });
