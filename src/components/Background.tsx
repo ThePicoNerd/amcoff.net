@@ -2,7 +2,7 @@
 
 import { martianMono } from "@/app/fonts";
 import classNames from "classnames";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function randomHexByte() {
   return Math.floor(Math.random() * 256)
@@ -12,10 +12,19 @@ function randomHexByte() {
 
 const CHANGES_PER_MS = 0.5;
 
+interface Sizes {
+  w: number;
+  h: number;
+  textHeight: number;
+}
+
 export default function Background() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number>();
+  const prevTimeRef = useRef<DOMHighResTimeStamp>(0);
   const [show, setShow] = useState(false);
+
+  const sizeRef = useRef<Sizes>();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -32,20 +41,29 @@ export default function Background() {
     const textHeight = glyphMetrics.actualBoundingBoxAscent;
     const h = glyphMetrics.actualBoundingBoxAscent * 1.5;
 
-    for (let x = 0; x < canvas.width; x += w) {
-      for (let y = 0; y < canvas.height; y += h) {
+    sizeRef.current = { w, h, textHeight };
+
+    for (let x = 0; x < canvas.width + w; x += w) {
+      for (let y = 0; y < canvas.height + h; y += h) {
         context.clearRect(x, y - h, w, h);
         context.fillText("00", x, y - (h - textHeight) / 2);
       }
     }
 
     setShow(true);
+  }, []);
 
-    let t0 = 0;
+  const draw = useCallback((t: DOMHighResTimeStamp) => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
 
-    const draw = (t: DOMHighResTimeStamp) => {
-      const dt = t - t0;
-      t0 = t;
+    if (!canvas || !context) return;
+
+    const dt = t - prevTimeRef.current;
+    prevTimeRef.current = t;
+
+    if (sizeRef.current) {
+      const { w, h, textHeight } = sizeRef.current;
 
       for (let i = 0; i < dt * CHANGES_PER_MS; i++) {
         const x = Math.round((Math.random() * canvas.width) / w) * w;
@@ -54,20 +72,20 @@ export default function Background() {
         context.clearRect(x, y - h, w, h);
         context.fillText(randomHexByte(), x, y - (h - textHeight) / 2);
       }
+    }
 
-      requestRef.current = requestAnimationFrame(draw);
-    };
-
-    requestAnimationFrame(draw);
+    requestRef.current = requestAnimationFrame(draw);
   }, []);
 
   useEffect(() => {
+    requestRef.current = requestAnimationFrame(draw);
+
     return () => {
       if (typeof requestRef.current === "number") {
         cancelAnimationFrame(requestRef.current);
       }
     };
-  });
+  }, [draw]);
 
   return (
     <div className="bg-neutral-900 absolute -z-10 inset-0 overflow-hidden">
