@@ -10,7 +10,7 @@ function randomHexByte() {
     .padStart(2, "0");
 }
 
-const CHANGES_PER_MS = 0.5;
+const CHANGES_PER_MS = 1;
 
 interface Sizes {
   w: number;
@@ -27,35 +27,29 @@ export default function Background() {
   const sizeRef = useRef<Sizes>();
 
   useEffect(() => {
-    const init = async () => {
-      const canvas = canvasRef.current;
-      const context = canvas?.getContext("2d");
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
 
-      if (!canvas || !context) return;
+    if (!canvas || !context) return;
 
-      await document.fonts.ready;
+    context.fillStyle = "rgb(64 64 64)";
+    context.font = `24px ${martianMono.style.fontFamily}`;
+    const glyphMetrics = context.measureText("0");
 
-      context.fillStyle = "rgb(64 64 64)";
-      context.font = `32px ${martianMono.style.fontFamily}`;
-      const glyphMetrics = context.measureText("0");
+    const w = glyphMetrics.width * 3;
+    const textHeight = glyphMetrics.actualBoundingBoxAscent;
+    const h = glyphMetrics.actualBoundingBoxAscent * 1.5;
 
-      const w = glyphMetrics.width * 3;
-      const textHeight = glyphMetrics.actualBoundingBoxAscent;
-      const h = glyphMetrics.actualBoundingBoxAscent * 1.5;
+    sizeRef.current = { w, h, textHeight };
 
-      sizeRef.current = { w, h, textHeight };
-
-      for (let x = 0; x < canvas.width + w; x += w) {
-        for (let y = 0; y < canvas.height + h; y += h) {
-          context.clearRect(x, y - h, w, h);
-          context.fillText("00", x, y - (h - textHeight) / 2);
-        }
+    for (let x = 0; x < canvas.width + w; x += w) {
+      for (let y = 0; y < canvas.height + h; y += h) {
+        context.clearRect(x, y - h, w, h);
+        context.fillText("00", x, y - (h - textHeight) / 2);
       }
+    }
 
-      setShow(true);
-    };
-
-    init();
+    setShow(true);
   }, []);
 
   const draw = useCallback((t: DOMHighResTimeStamp) => {
@@ -95,7 +89,12 @@ export default function Background() {
   }, [draw, show]);
 
   return (
-    <div className="bg-neutral-900 fixed -z-10 inset-0 overflow-hidden">
+    <div
+      className="bg-neutral-900 fixed -z-10 inset-0 overflow-hidden"
+      style={{
+        fontFamily: martianMono.style.fontFamily,
+      }}
+    >
       <canvas
         width="2000"
         height="2000"
