@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
-
-const ibmPlexSans = IBM_Plex_Sans({
-  weight: ["400", "700"],
-  display: "swap",
-  subsets: ["latin"],
-});
+import { ibmPlexSans } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Åke Amcoff",
