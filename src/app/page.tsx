@@ -4,7 +4,7 @@ import Background from "@/components/Background";
 
 export default function Page() {
   return (
-    <div className="relative">
+    <>
       <Background />
       <main className="max-w-screen-xl mx-auto flex items-center justify-center min-h-screen p-4">
         <div className="text-center">
@@ -27,6 +27,6 @@ export default function Page() {
           </a>
         </div>
       </main>
-    </div>
+    </>
   );
 }

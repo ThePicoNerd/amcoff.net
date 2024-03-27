@@ -27,30 +27,35 @@ export default function Background() {
   const sizeRef = useRef<Sizes>();
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
+    const init = async () => {
+      const canvas = canvasRef.current;
+      const context = canvas?.getContext("2d");
 
-    if (!canvas || !context) return;
+      if (!canvas || !context) return;
 
-    // Start drawing
-    context.fillStyle = "rgb(64 64 64)";
-    context.font = `32px ${martianMono.style.fontFamily}`;
-    const glyphMetrics = context.measureText("0");
+      await document.fonts.ready;
 
-    const w = glyphMetrics.width * 3;
-    const textHeight = glyphMetrics.actualBoundingBoxAscent;
-    const h = glyphMetrics.actualBoundingBoxAscent * 1.5;
+      context.fillStyle = "rgb(64 64 64)";
+      context.font = `32px ${martianMono.style.fontFamily}`;
+      const glyphMetrics = context.measureText("0");
 
-    sizeRef.current = { w, h, textHeight };
+      const w = glyphMetrics.width * 3;
+      const textHeight = glyphMetrics.actualBoundingBoxAscent;
+      const h = glyphMetrics.actualBoundingBoxAscent * 1.5;
 
-    for (let x = 0; x < canvas.width + w; x += w) {
-      for (let y = 0; y < canvas.height + h; y += h) {
-        context.clearRect(x, y - h, w, h);
-        context.fillText("00", x, y - (h - textHeight) / 2);
+      sizeRef.current = { w, h, textHeight };
+
+      for (let x = 0; x < canvas.width + w; x += w) {
+        for (let y = 0; y < canvas.height + h; y += h) {
+          context.clearRect(x, y - h, w, h);
+          context.fillText("00", x, y - (h - textHeight) / 2);
+        }
       }
-    }
 
-    setShow(true);
+      setShow(true);
+    };
+
+    init();
   }, []);
 
   const draw = useCallback((t: DOMHighResTimeStamp) => {
@@ -78,17 +83,19 @@ export default function Background() {
   }, []);
 
   useEffect(() => {
-    requestRef.current = requestAnimationFrame(draw);
+    if (show) {
+      requestRef.current = requestAnimationFrame(draw);
+    }
 
     return () => {
       if (typeof requestRef.current === "number") {
         cancelAnimationFrame(requestRef.current);
       }
     };
-  }, [draw]);
+  }, [draw, show]);
 
   return (
-    <div className="bg-neutral-900 absolute -z-10 inset-0 overflow-hidden">
+    <div className="bg-neutral-900 fixed -z-10 inset-0 overflow-hidden">
       <canvas
         width="2000"
         height="2000"
