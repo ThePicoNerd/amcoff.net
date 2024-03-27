@@ -13,7 +13,7 @@ export default function Page() {
           placeholder="blur"
           className="rounded-full mx-auto"
         />
-        <h1 className="text-4xl font-bold tracking-tighter my-4">Åke Amcoff</h1>
+        <h1 className="text-4xl font-bold tracking-tight my-4">Åke Amcoff</h1>
         <a
           href="https://github.com/akeamc"
           className="text-gray-700 hover:underline"
