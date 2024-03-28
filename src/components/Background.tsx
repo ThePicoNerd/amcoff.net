@@ -14,20 +14,25 @@ const UPDATE_FREQ = 0.01;
 function Row(props: { x: number; y: number }) {
   const textRef = useRef<SVGTextElement>(null);
   const frameRef = useRef<number | null>(null);
-  const timeRef = useRef(0);
+  const updateCountRef = useRef(0);
 
   const draw = useCallback((t: DOMHighResTimeStamp) => {
     const element = textRef.current;
     if (!element) return;
 
-    const delta = t - timeRef.current;
-    timeRef.current = t;
-
     const bytes = element.textContent!.split(" ");
 
-    for (let i = 0; i < delta * UPDATE_FREQ; i++) {
+    let updates = 0;
+    while (updateCountRef.current < t * UPDATE_FREQ) {
       bytes[Math.floor(Math.random() * bytes.length)] = randomHexByte();
+      updateCountRef.current++;
+      updates++;
+
+      if (updates > 10) {
+        break;
+      }
     }
+    bytes[Math.floor(Math.random() * bytes.length)] = randomHexByte();
 
     element.textContent = bytes.join(" ");
 
@@ -64,7 +69,7 @@ export default function Background() {
           id="text"
           x="0"
           y="0"
-          width="135"
+          width="134.41"
           height="120"
           patternUnits="userSpaceOnUse"
         >
