@@ -1,0 +1,30 @@
+.grid {
+  @apply max-w-screen-2xl text-neutral-400;
+
+  display: grid;
+  aspect-ratio: 3 / 2;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
+
+  @media (max-aspect-ratio: 1 / 1) {
+    aspect-ratio: 2 / 3;
+    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+
+    .heading {
+      @apply row-span-2;
+    }
+
+    .text {
+      @apply row-start-6 col-start-4;
+    }
+  }
+}
+
+.heading {
+  @apply text-8xl leading-none font-medium tracking-[-0.03em] col-span-full text-black;
+}
+
+.text {
+  @apply row-start-4 col-start-6 self-end text-2xl text-right;
+}
