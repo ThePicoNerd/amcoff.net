@@ -22,7 +22,7 @@
 }
 
 .heading {
-  @apply text-8xl leading-none font-medium tracking-[-0.03em] col-span-full text-black;
+  @apply text-6xl md:text-8xl leading-none font-medium tracking-[-0.03em] col-span-full text-black;
 }
 
 .text {
