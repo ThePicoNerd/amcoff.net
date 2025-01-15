@@ -1,11 +1,12 @@
 use std::{sync::LazyLock, time::Duration};
 
 use axum::{
+    extract::Path,
     http::{
         header::{CACHE_CONTROL, CONTENT_TYPE},
         HeaderValue, StatusCode,
     },
-    response::IntoResponse,
+    response::{Html, IntoResponse},
     routing::get,
     Router,
 };
@@ -14,10 +15,28 @@ use axum_extra::{
     TypedHeader,
 };
 use prometheus::{register_int_counter, IntCounter};
+use rust_embed::Embed;
 use tower_http::{compression::CompressionLayer, set_header::SetResponseHeaderLayer};
 
 static ROBOT_COUNTER: LazyLock<IntCounter> =
     LazyLock::new(|| register_int_counter!("robots", "/robots.txt counter").unwrap());
+
+async fn static_handler(Path(path): Path<String>) -> impl IntoResponse {
+    #[derive(Embed)]
+    #[folder = "assets/"]
+    struct Assets;
+
+    match Assets::get(&path) {
+        Some(file) => (
+            TypedHeader(ContentType::from(
+                mime_guess::from_path(path).first_or_octet_stream(),
+            )),
+            file.data,
+        )
+            .into_response(),
+        None => not_found().await.into_response(),
+    }
+}
 
 async fn robots() -> impl IntoResponse {
     ROBOT_COUNTER.inc();
@@ -27,13 +46,12 @@ async fn robots() -> impl IntoResponse {
 
 async fn index() -> impl IntoResponse {
     (
-        TypedHeader(ContentType::html()),
         TypedHeader(
             CacheControl::new()
                 .with_public()
                 .with_max_age(Duration::from_secs(60)),
         ),
-        include_bytes!("index.html"),
+        Html(include_bytes!("index.html")),
     )
 }
 
@@ -62,6 +80,7 @@ async fn main() {
         .route("/", get(index))
         .route("/robots.txt", get(robots))
         .route("/metrics", get(metrics))
+        .route("/{*file}", get(static_handler))
         .method_not_allowed_fallback(method_not_allowed)
         .fallback(not_found)
         .layer(CompressionLayer::new())
