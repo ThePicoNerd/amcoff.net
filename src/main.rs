@@ -1,4 +1,4 @@
-use std::sync::LazyLock;
+use std::{sync::LazyLock, time::Duration};
 
 use axum::{
     http::{
@@ -9,6 +9,10 @@ use axum::{
     routing::get,
     Router,
 };
+use axum_extra::{
+    headers::{CacheControl, ContentType},
+    TypedHeader,
+};
 use prometheus::{register_int_counter, IntCounter};
 use tower_http::{compression::CompressionLayer, set_header::SetResponseHeaderLayer};
 
@@ -17,24 +21,29 @@ static ROBOT_COUNTER: LazyLock<IntCounter> =
 
 async fn robots() -> impl IntoResponse {
     ROBOT_COUNTER.inc();
-    "# gnorts, mr. alien"
+
+    (TypedHeader(ContentType::text()), "# gnorts, mr. alien")
 }
 
 async fn index() -> impl IntoResponse {
     (
-        [
-            (CONTENT_TYPE, "text/html"),
-            (CACHE_CONTROL, "public; max-age=60"),
-        ],
+        TypedHeader(ContentType::html()),
+        TypedHeader(
+            CacheControl::new()
+                .with_public()
+                .with_max_age(Duration::from_secs(60)),
+        ),
         include_bytes!("index.html"),
     )
 }
 
 async fn metrics() -> impl IntoResponse {
     let metric_families = prometheus::gather();
-    prometheus::TextEncoder::new()
+    let text = prometheus::TextEncoder::new()
         .encode_to_string(&metric_families)
-        .unwrap()
+        .unwrap();
+
+    ([(CONTENT_TYPE, prometheus::TEXT_FORMAT)], text)
 }
 
 async fn method_not_allowed() -> impl IntoResponse {
