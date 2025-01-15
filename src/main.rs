@@ -17,7 +17,7 @@ static ROBOT_COUNTER: LazyLock<IntCounter> =
 
 async fn robots() -> impl IntoResponse {
     ROBOT_COUNTER.inc();
-    "lol"
+    "# gnorts, mr. alien"
 }
 
 async fn index() -> impl IntoResponse {
