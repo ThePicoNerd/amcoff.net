@@ -15,8 +15,13 @@ use axum_extra::{
     TypedHeader,
 };
 use prometheus::{register_int_counter, IntCounter};
+use rspotify::{scopes, AuthCodeSpotify, Credentials, OAuth, Token};
 use rust_embed::Embed;
+use snafu::{OptionExt, ResultExt, Whatever};
+use spotify::music;
 use tower_http::{compression::CompressionLayer, set_header::SetResponseHeaderLayer};
+
+mod spotify;
 
 static ROBOT_COUNTER: LazyLock<IntCounter> =
     LazyLock::new(|| register_int_counter!("robots", "/robots.txt counter").unwrap());
@@ -72,12 +77,40 @@ async fn not_found() -> impl IntoResponse {
     (StatusCode::NOT_FOUND, "Not found")
 }
 
+#[derive(Clone)]
+struct AppState {
+    spotify: Option<AuthCodeSpotify>,
+}
+
+async fn setup_spotify() -> Result<AuthCodeSpotify, Whatever> {
+    let client_credentials = Credentials::from_env()
+        .whatever_context("RSPOTIFY_CLIENT_ID or RSPOTIFY_CLIENT_SECRET not set")?;
+    let spotify = AuthCodeSpotify::with_config(
+        client_credentials,
+        OAuth {
+            scopes: scopes!("user-read-currently-playing"),
+            ..Default::default()
+        },
+        Default::default(),
+    );
+    let refresh_token = std::env::var("RSPOTIFY_REFRESH_TOKEN")
+        .whatever_context("RSPOTIFY_REFRESH_TOKEN not set")?;
+    *spotify.token.lock().await.unwrap() = Some(Token {
+        refresh_token: Some(refresh_token),
+        ..Default::default()
+    });
+    Ok(spotify)
+}
+
 #[tokio::main]
 async fn main() {
+    let _ = dotenvy::dotenv();
+
     let _ = ROBOT_COUNTER.get();
 
     let app = Router::new()
         .route("/", get(index))
+        .route("/music", get(music))
         .route("/robots.txt", get(robots))
         .route("/metrics", get(metrics))
         .route("/{*file}", get(static_handler))
@@ -87,7 +120,16 @@ async fn main() {
         .layer(SetResponseHeaderLayer::if_not_present(
             CACHE_CONTROL,
             HeaderValue::from_static("no-cache"),
-        ));
+        ))
+        .with_state(AppState {
+            spotify: match setup_spotify().await {
+                Ok(spotify) => Some(spotify),
+                Err(e) => {
+                    eprintln!("Failed to set up Spotify: {}", e);
+                    None
+                }
+            },
+        });
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
