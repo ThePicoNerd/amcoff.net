@@ -60,6 +60,23 @@ async fn index() -> impl IntoResponse {
     )
 }
 
+async fn cv() -> impl IntoResponse {
+    (
+        TypedHeader(
+            CacheControl::new()
+                .with_public()
+                .with_max_age(Duration::from_secs(60)),
+        ),
+        Html(include_bytes!("cv.html")),
+    )
+}
+
+async fn favicon_ico() -> impl IntoResponse {
+    let favicon = include_bytes!(concat!(env!("OUT_DIR"), "/favicon.ico"));
+
+    ([(CONTENT_TYPE, "image/x-icon")], favicon)
+}
+
 async fn metrics() -> impl IntoResponse {
     let metric_families = prometheus::gather();
     let text = prometheus::TextEncoder::new()
@@ -110,8 +127,10 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(index))
+        .route("/cv", get(cv))
         .route("/music", get(music))
         .route("/robots.txt", get(robots))
+        .route("/favicon.ico", get(favicon_ico))
         .route("/metrics", get(metrics))
         .route("/{*file}", get(static_handler))
         .method_not_allowed_fallback(method_not_allowed)
