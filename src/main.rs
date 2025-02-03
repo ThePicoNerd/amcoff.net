@@ -1,4 +1,4 @@
-use std::{sync::LazyLock, time::Duration};
+use std::sync::LazyLock;
 
 use axum::{
     extract::Path,
@@ -6,14 +6,11 @@ use axum::{
         header::{CACHE_CONTROL, CONTENT_TYPE},
         HeaderValue, StatusCode,
     },
-    response::{Html, IntoResponse},
+    response::IntoResponse,
     routing::get,
     Router,
 };
-use axum_extra::{
-    headers::{CacheControl, ContentType},
-    TypedHeader,
-};
+use axum_extra::{headers::ContentType, TypedHeader};
 use prometheus::{register_int_counter, IntCounter};
 use rspotify::{scopes, AuthCodeSpotify, Credentials, OAuth, Token};
 use rust_embed::Embed;
@@ -21,6 +18,7 @@ use snafu::{OptionExt, ResultExt, Whatever};
 use spotify::music;
 use tower_http::{compression::CompressionLayer, set_header::SetResponseHeaderLayer};
 
+mod pages;
 mod spotify;
 
 static ROBOT_COUNTER: LazyLock<IntCounter> =
@@ -49,26 +47,8 @@ async fn robots() -> impl IntoResponse {
     (TypedHeader(ContentType::text()), "# gnorts, mr. alien")
 }
 
-async fn index() -> impl IntoResponse {
-    (
-        TypedHeader(
-            CacheControl::new()
-                .with_public()
-                .with_max_age(Duration::from_secs(60)),
-        ),
-        Html(include_bytes!("index.html")),
-    )
-}
-
-async fn cv() -> impl IntoResponse {
-    (
-        TypedHeader(
-            CacheControl::new()
-                .with_public()
-                .with_max_age(Duration::from_secs(60)),
-        ),
-        Html(include_bytes!("cv.html")),
-    )
+async fn styles() -> impl IntoResponse {
+    ([(CONTENT_TYPE, "text/css")], include_bytes!("styles.css"))
 }
 
 async fn favicon_ico() -> impl IntoResponse {
@@ -126,9 +106,10 @@ async fn main() {
     let _ = ROBOT_COUNTER.get();
 
     let app = Router::new()
-        .route("/", get(index))
-        .route("/cv", get(cv))
+        .route("/", get(pages::index))
+        .route("/cv", get(pages::cv))
         .route("/music", get(music))
+        .route("/styles.css", get(styles))
         .route("/robots.txt", get(robots))
         .route("/favicon.ico", get(favicon_ico))
         .route("/metrics", get(metrics))

@@ -11,6 +11,7 @@ axum = "0.8.1"
 axum-extra = { version = "0.10.0", features = ["typed-header"] }
 dotenvy = "0.15.7"
 futures-core = "0.3.31"
+hypertext = { version = "0.6.2", features = ["axum"] }
 image = { version = "0.25.5", default-features = false, features = ["png"] }
 mime_guess = "2.0.5"
 prometheus = "0.13.4"
