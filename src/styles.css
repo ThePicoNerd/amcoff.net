@@ -38,11 +38,19 @@ h1 a {
 body {
   margin: 0;
   padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 main {
   max-width: 40rem;
   margin: 0 auto;
+  flex-grow: 1;
+}
+
+footer {
+  margin: 1rem 0;
 }
 
 hgroup {
@@ -105,7 +113,6 @@ hgroup {
 }
 
 main.centered {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -138,4 +145,41 @@ main.centered hgroup {
 .links a:hover,
 .links a:focus {
   background-color: #dbdad7;
+}
+
+.rainbow {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.rainbow div {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  transition: transform 0.1s ease-in-out;
+  background-color: var(--color);
+}
+
+.rainbow .green {
+  --color: #75bd21;
+}
+
+.rainbow .yellow {
+  --color: #ffc728;
+}
+
+.rainbow .orange {
+  --color: #ff661c;
+}
+
+.rainbow .red {
+  --color: #cf0f2b;
+}
+
+.rainbow .purple {
+  --color: #b01cab;
+}
+
+.rainbow .blue {
+  --color: #00a1de;
 }

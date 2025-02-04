@@ -15,6 +15,19 @@ fn hgroup() -> impl Renderable {
     }
 }
 
+fn rainbow() -> impl Renderable {
+    maud! {
+        div.rainbow {
+            div.red {}
+            div.orange {}
+            div.yellow {}
+            div.green {}
+            div.blue {}
+            div.purple {}
+        }
+    }
+}
+
 fn layout(main: impl Renderable) -> impl Renderable {
     maud! {
         !DOCTYPE
@@ -29,7 +42,12 @@ fn layout(main: impl Renderable) -> impl Renderable {
 
                 link rel="stylesheet" href="/styles.css";
             }
-            body { (main) }
+            body {
+                (main)
+                footer {
+                    (rainbow())
+                }
+            }
         }
     }
 }
@@ -60,9 +78,15 @@ pub async fn cv() -> impl IntoResponse {
               h3 { "Career" }
               ul {
                   li {
-                      a href="https://www.5monkeys.se/" { "5 Monkeys Agency" } " (2022–2024)"
+                      "Software developer, "
+                      a href="https://www.5monkeys.se/" { "5 Monkeys Agency" }
+                      " (2022–2024)"
                   }
-                  li { a href="https://www.vaja.net/" { "Vaja" } " (2024–)" }
+                  li {
+                      "Software developer, "
+                      a href="https://www.vaja.net/" { "Vaja" }
+                      " (2024–)"
+                  }
               }
               h3 { "Languages" }
               ul {
