@@ -3,6 +3,9 @@ name = "amcoff"
 version = "0.1.0"
 edition = "2021"
 
+[workspace]
+members = [".", "graphics"]
+
 [profile.dev.build-override]
 opt-level = 3 # speed up favicon generation
 
@@ -11,6 +14,7 @@ axum = "0.8.1"
 axum-extra = { version = "0.10.0", features = ["typed-header"] }
 dotenvy = "0.15.7"
 futures-core = "0.3.31"
+graphics.path = "graphics"
 hypertext = { version = "0.6.2", features = ["axum"] }
 image = { version = "0.25.5", default-features = false, features = ["png"] }
 mime_guess = "2.0.5"
@@ -21,6 +25,3 @@ rust-embed = { version = "8.5.0", features = ["axum"] }
 snafu = "0.8.5"
 tokio = { version = "1.43.0", features = ["full"] }
 tower-http = { version = "0.6.2", features = ["compression-br", "set-header"] }
-
-[build-dependencies]
-image = { version = "0.25.5", default-features = false, features = ["ico", "jpeg"] }

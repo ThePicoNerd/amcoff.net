@@ -1,5 +1,8 @@
 use axum::response::IntoResponse;
-use hypertext::{html_elements, maud, GlobalAttributes, Renderable};
+use hypertext::{
+    html_elements::{self, meta},
+    maud, Attribute, GlobalAttributes, Renderable,
+};
 
 const IPA: &str = "[ˈoː.kɛ]";
 const IPA_URL: &str = "https://ipa-reader.com/?text=%5B%CB%88o%CB%90.k%C9%9B%5D&voice=Astrid";
@@ -28,6 +31,16 @@ fn rainbow() -> impl Renderable {
     }
 }
 
+#[allow(unused)]
+trait MetaPropertyExt {
+    #[allow(non_upper_case_globals)]
+    const property: Attribute;
+}
+
+impl MetaPropertyExt for meta {
+    const property: Attribute = Attribute;
+}
+
 fn layout(main: impl Renderable) -> impl Renderable {
     maud! {
         !DOCTYPE
@@ -36,6 +49,8 @@ fn layout(main: impl Renderable) -> impl Renderable {
                 meta charset="utf-8";
                 meta name="viewport" content="width=device-width, initial-scale=1";
                 title { "Åke Amcoff" }
+
+                meta property="og:image" content="https://amcoff.net/og";
 
                 link rel="preconnect" href="https://rsms.me/";
                 link rel="stylesheet" href="https://rsms.me/inter/inter.css";

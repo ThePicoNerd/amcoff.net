@@ -18,6 +18,7 @@ use snafu::{OptionExt, ResultExt, Whatever};
 use spotify::music;
 use tower_http::{compression::CompressionLayer, set_header::SetResponseHeaderLayer};
 
+mod graphics;
 mod pages;
 mod spotify;
 
@@ -52,9 +53,7 @@ async fn styles() -> impl IntoResponse {
 }
 
 async fn favicon_ico() -> impl IntoResponse {
-    let favicon = include_bytes!(concat!(env!("OUT_DIR"), "/favicon.ico"));
-
-    ([(CONTENT_TYPE, "image/x-icon")], favicon)
+    ([(CONTENT_TYPE, "image/x-icon")], ::graphics::favicon::ICO)
 }
 
 async fn metrics() -> impl IntoResponse {
@@ -113,6 +112,7 @@ async fn main() {
         .route("/robots.txt", get(robots))
         .route("/favicon.ico", get(favicon_ico))
         .route("/metrics", get(metrics))
+        .route("/og", get(graphics::opengraph))
         .route("/{*file}", get(static_handler))
         .method_not_allowed_fallback(method_not_allowed)
         .fallback(not_found)
